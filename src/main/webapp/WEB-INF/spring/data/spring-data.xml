@@ -16,7 +16,7 @@
 
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
-		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<beans:property name="driverClassName" value="${database.driver}" />
 		<beans:property name="url" value="${database.url}" />
 		<beans:property name="username" value="${database.user}" />
 		<beans:property name="password" value="${database.password}" />
@@ -34,13 +34,12 @@
 		<beans:property name="dataSource" ref="dataSource" />
 		<beans:property name="packagesToScan">
 			<beans:array>
-				<beans:value>com.asat.data.security</beans:value>
-				<beans:value>com.asat.data.entities</beans:value>
+				<beans:value>com.asat.data.entity</beans:value>
 			</beans:array>
 		</beans:property>
 		<beans:property name="hibernateProperties">
 			<beans:props>
-				<beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect
+				<beans:prop key="hibernate.dialect">${database.hibernate.dialect}
 				</beans:prop>
 			</beans:props>
 		</beans:property>
