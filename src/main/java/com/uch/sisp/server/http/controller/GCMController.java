@@ -27,17 +27,15 @@ public class GCMController
 	public ResponseEntity<RegisterDeviceResponse> registerDevice(@RequestBody RegisterDeviceRequest request)
 	{
 		ResponseEntity<RegisterDeviceResponse> response = null;
-		RegisterDeviceResponse body = null;
+		RegisterDeviceResponse responseBody = null;
 
 		try
 		{
-			gcmService.registerDevice(request);
-			body = new RegisterDeviceResponse();
-			body.setRegisterId(request.getRegisterId());
-			response = new ResponseEntity<RegisterDeviceResponse>(body, HttpStatus.OK);
+			responseBody = gcmService.registerDevice(request);
+			response = new ResponseEntity<RegisterDeviceResponse>(responseBody, HttpStatus.OK);
 		} catch (EntityNotFoundException e)
 		{
-			response = new ResponseEntity<RegisterDeviceResponse>(body, HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<RegisterDeviceResponse>(responseBody, HttpStatus.NOT_FOUND);
 			e.printStackTrace();
 		}
 

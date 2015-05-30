@@ -9,6 +9,7 @@ import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
+import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GCMService;
 
@@ -19,11 +20,17 @@ public class GCMServiceImpl implements GCMService
 	UserDAO userDao;
 
 	@Override
-	public void registerDevice(RegisterDeviceRequest request) throws EntityNotFoundException
+	public RegisterDeviceResponse registerDevice(RegisterDeviceRequest request) throws EntityNotFoundException
 	{
+		RegisterDeviceResponse response = null;
 		User user = (User) userDao.getById(request.getId());
 		user.setRegistrationId(request.getRegisterId());
+		
 		userDao.update(user);
+		
+		response = new RegisterDeviceResponse();
+		response.setRegisterId(request.getRegisterId());
+		return response;
 	}
 
 	@Override
