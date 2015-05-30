@@ -53,6 +53,11 @@ public abstract class GenericDAOImpl<T extends GenericDomainObject> implements G
 	{
 		this.type = type;
 	}
+	
+	public GenericDAOImpl(Class<T> type) {
+		super();
+		this.type = type;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -25,6 +25,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/LUCAS/PROYECTO/uch-sisp-server/lib/gcm-server.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
