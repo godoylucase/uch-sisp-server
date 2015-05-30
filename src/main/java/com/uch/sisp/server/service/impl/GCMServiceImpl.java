@@ -7,7 +7,9 @@ import com.uch.sisp.server.database.dao.UserDAO;
 import com.uch.sisp.server.database.entity.User;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
+import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
+import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GCMService;
 
 @Service
@@ -30,6 +32,14 @@ public class GCMServiceImpl implements GCMService
 		User user = (User) userDao.getById(request.getId());
 		user.setRegistrationId(null);
 		userDao.update(user);
+	}
+
+	@Override
+	public SendNotificationResponse sendNotification(SendNotificationRequest request)
+	{
+		
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

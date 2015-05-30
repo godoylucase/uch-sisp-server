@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
+import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
-import com.uch.sisp.server.http.response.UnregisterDeviceResponse;
+import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GCMService;
 
 @RestController
@@ -59,6 +60,14 @@ public class GCMController
 			e.printStackTrace();
 		}
 
+		return response;
+	}
+	
+	@RequestMapping(value = "/send", method = RequestMethod.POST)
+	public ResponseEntity<SendNotificationResponse> sendNotification(@RequestBody SendNotificationRequest request)
+	{
+		ResponseEntity<SendNotificationResponse> response = null;
+		
 		return response;
 	}
 }
