@@ -44,12 +44,21 @@ public class GCMController
 	}
 
 	@RequestMapping(value = "/unregisterDevice", method = RequestMethod.POST)
-	public ResponseEntity<UnregisterDeviceResponse> unregisterDevice(
-			@RequestBody UnregisterDeviceRequest unregDevice)
+	public ResponseEntity<Void> unregisterDevice(
+			@RequestBody UnregisterDeviceRequest request)
 	{
-		UnregisterDeviceResponse body = new UnregisterDeviceResponse();
-		ResponseEntity<UnregisterDeviceResponse> response = new ResponseEntity<UnregisterDeviceResponse>(
-				body, HttpStatus.OK);
+		ResponseEntity<Void> response = null;
+
+		try
+		{
+			gcmService.unregisterDevice(request);
+			response = new ResponseEntity<Void>(HttpStatus.OK);
+		} catch (EntityNotFoundException e)
+		{
+			response = new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			e.printStackTrace();
+		}
+
 		return response;
 	}
 }

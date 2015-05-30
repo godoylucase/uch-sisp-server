@@ -1,6 +1,9 @@
 package com.uch.sisp.server.http.response;
 
-public class UnregisterDeviceResponse
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class UnregisterDeviceResponse implements Serializable
 {
 
 }

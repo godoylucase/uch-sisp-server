@@ -7,6 +7,7 @@ import com.uch.sisp.server.database.dao.UserDAO;
 import com.uch.sisp.server.database.entity.User;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
+import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.service.GCMService;
 
 @Service
@@ -16,10 +17,18 @@ public class GCMServiceImpl implements GCMService
 	UserDAO userDao;
 
 	@Override
-	public void registerDevice(RegisterDeviceRequest device) throws EntityNotFoundException
+	public void registerDevice(RegisterDeviceRequest request) throws EntityNotFoundException
 	{
-		User user = (User) userDao.getById(device.getId());
-		user.setRegistrationId(device.getRegisterId());
+		User user = (User) userDao.getById(request.getId());
+		user.setRegistrationId(request.getRegisterId());
+		userDao.update(user);
+	}
+
+	@Override
+	public void unregisterDevice(UnregisterDeviceRequest request) throws EntityNotFoundException
+	{
+		User user = (User) userDao.getById(request.getId());
+		user.setRegistrationId(null);
 		userDao.update(user);
 	}
 
