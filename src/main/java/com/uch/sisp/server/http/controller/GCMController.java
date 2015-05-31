@@ -65,6 +65,8 @@ public class GCMController
 	public ResponseEntity<SendNotificationResponse> sendNotification(@RequestBody SendNotificationRequest request)
 	{
 		ResponseEntity<SendNotificationResponse> response = null;
+		SendNotificationResponse responseBody = null;
+
 		
 		return response;
 	}

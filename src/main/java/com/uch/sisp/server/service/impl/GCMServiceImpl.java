@@ -1,33 +1,42 @@
 package com.uch.sisp.server.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.android.gcm.server.Sender;
 import com.uch.sisp.server.database.dao.UserDAO;
 import com.uch.sisp.server.database.entity.User;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
+import com.uch.sisp.server.database.exception.NullDestinationException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GCMService;
+import com.uch.sisp.server.service.helper.GCMHelper;
 
 @Service
 public class GCMServiceImpl implements GCMService
 {
 	@Autowired
-	UserDAO userDao;
+	private UserDAO userDao;
+
+	@Autowired
+	private Sender sender;
 
 	@Override
-	public RegisterDeviceResponse registerDevice(RegisterDeviceRequest request) throws EntityNotFoundException
+	public RegisterDeviceResponse registerDevice(RegisterDeviceRequest request)
+			throws EntityNotFoundException
 	{
 		RegisterDeviceResponse response = null;
 		User user = (User) userDao.getById(request.getId());
 		user.setRegistrationId(request.getRegisterId());
-		
+
 		userDao.update(user);
-		
+
 		response = new RegisterDeviceResponse();
 		response.setRegisterId(request.getRegisterId());
 		return response;
@@ -43,10 +52,20 @@ public class GCMServiceImpl implements GCMService
 
 	@Override
 	public SendNotificationResponse sendNotification(SendNotificationRequest request)
+			throws EntityNotFoundException, NullDestinationException
 	{
+		if (request.getDestinationEmails().isEmpty())
+			throw new NullDestinationException();
+
+		SendNotificationResponse response = null;
+
+		User user = userDao.getUserByEmail(request.getOriginUserEmail());
+		List<String> registrationIds = GCMHelper.getVerifiedRegistrationIds(user,
+				request.getDestinationEmails());
 		
-		// TODO Auto-generated method stub
-		return null;
+		//TODO: construir el mensaje de acuerdo al tag del request
+
+		return response;
 	}
 
 }

@@ -6,27 +6,27 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class SendNotificationRequest implements Serializable
 {
-	private String originId;
-	private List<String> destinationIds;
+	private String originUserEmail;
+	private List<String> destinationEmails;
 
-	public String getOriginId()
+	public String getOriginUserEmail()
 	{
-		return originId;
+		return originUserEmail;
 	}
 
-	public List<String> getDestinationIds()
+	public List<String> getDestinationEmails()
 	{
-		return destinationIds;
+		return destinationEmails;
 	}
 
-	public void setOriginId(String originId)
+	public void setOriginUserEmail(String originUserEmail)
 	{
-		this.originId = originId;
+		this.originUserEmail = originUserEmail;
 	}
 
-	public void setDestinationIds(List<String> destinationIds)
+	public void setDestinationEmails(List<String> destinationEmails)
 	{
-		this.destinationIds = destinationIds;
+		this.destinationEmails = destinationEmails;
 	}
 
 }

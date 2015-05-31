@@ -6,16 +6,27 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class SendNotificationResponse implements Serializable
 {
-	private List<String> unsentDestinationIds;
+	private List<String> unsentDestinationUsers;
+	private List<String> unsuscribedDestinationUsers;
 
-	public List<String> getUnsentDestinationIds()
+	public List<String> getUnsentDestinationUsers()
 	{
-		return unsentDestinationIds;
+		return unsentDestinationUsers;
 	}
 
-	public void setUnsentDestinationIds(List<String> unsentDestinationIds)
+	public List<String> getUnsuscribedDestinationUsers()
 	{
-		this.unsentDestinationIds = unsentDestinationIds;
+		return unsuscribedDestinationUsers;
+	}
+
+	public void setUnsentDestinationUsers(List<String> unsentDestinationUsers)
+	{
+		this.unsentDestinationUsers = unsentDestinationUsers;
+	}
+
+	public void setUnsuscribedDestinationUsers(List<String> unsuscribedDestinationUsers)
+	{
+		this.unsuscribedDestinationUsers = unsuscribedDestinationUsers;
 	}
 
 }
