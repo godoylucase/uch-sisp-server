@@ -1,4 +1,4 @@
-package com.uch.sisp.server.domain;
+package com.uch.sisp.server.http.domain;
 
 public enum NotificationTag
 {
