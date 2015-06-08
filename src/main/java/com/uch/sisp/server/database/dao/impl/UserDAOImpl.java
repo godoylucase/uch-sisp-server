@@ -18,13 +18,27 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO
 		super(User.class);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public User getUserByEmail(String originUserEmail) throws EntityNotFoundException
 	{
 		Query query = getHibernateCurrentSession()
 				.createQuery(
-						"from User as u where u.userEmail = :originUserEmail order by u.originUserEmail asc");
+						"from User as u where u.userEmail = :originUserEmail");
 		query.setParameter("originUserEmail", originUserEmail);
+		User user = (User) query.uniqueResult();
+		if(user == null) throw new EntityNotFoundException();
+		return user;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public User getByRegistrationId(String registrationId) throws EntityNotFoundException
+	{
+		Query query = getHibernateCurrentSession()
+				.createQuery(
+						"from User as u where u.registrationId = :registrationId");
+		query.setParameter("registrationId", registrationId);
 		User user = (User) query.uniqueResult();
 		if(user == null) throw new EntityNotFoundException();
 		return user;

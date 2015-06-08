@@ -6,5 +6,7 @@ import com.uch.sisp.server.database.exception.EntityNotFoundException;
 public interface UserDAO extends GenericDAO<User>
 {
 	public User getUserByEmail(String originUserEmail) throws EntityNotFoundException;
+
+	public User getByRegistrationId(String regId) throws EntityNotFoundException;
 	
 }
