@@ -3,15 +3,17 @@ package com.uch.sisp.server.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.google.android.gcm.server.Message;
 import com.uch.sisp.server.database.dao.UserDAO;
 import com.uch.sisp.server.database.entity.User;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
-import com.uch.sisp.server.database.exception.NullDestinationException;
 import com.uch.sisp.server.gcm.GCMConnector;
+import com.uch.sisp.server.gcm.exception.GCMNullDestinationException;
 import com.uch.sisp.server.gcm.exception.GCMSendingMessageException;
+import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.gcm.helper.GCMHelper;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
@@ -57,43 +59,46 @@ public class GCMServiceImpl implements GCMService
 
 	@Override
 	public SendNotificationResponse sendNotification(SendNotificationRequest request)
-			throws EntityNotFoundException, NullDestinationException
+			throws GCMServiceException
 	{
-		// chequea si la lista de distrubución no está vacía
-		if (request.getDestinationEmails().isEmpty())
-			throw new NullDestinationException();
-
 		SendNotificationResponse response = null;
-
-		// busca al usuario solicitante y sus suscriptos
-		User user = userDao.getUserByEmail(request.getOriginUserEmail());
-		List<String> devices = gcmHelper.getVerifiedRegistrationIds(user, request.getDestinationEmails());
-
-		Message message = null;
-
-		// TODO: registrar nueva transacción en pendiente
-
-		switch (request.getTag())
-		{
-		case PANIC:
-			message = gcmHelper.buildPanicNotification(request.getPosition());
-			break;
-		default:
-			break;
-		}
-		// envia los mensajes
 		try
 		{
+			// chequea si la lista de distrubución no está vacía
+			if (request.getDestinationEmails().isEmpty())
+				throw new GCMNullDestinationException();
+
+			// busca al usuario solicitante y sus suscriptos
+			User user = userDao.getUserByEmail(request.getOriginUserEmail());
+			List<String> devices = gcmHelper.getVerifiedRegistrationIds(user, request.getDestinationEmails());
+
+			Message message = null;
+
+			// TODO: registrar nueva transacción en pendiente
+
+			switch (request.getTag())
+			{
+			case PANIC:
+				message = gcmHelper.buildPanicNotification(request.getPosition());
+				break;
+			default:
+				break;
+			}
+			// envia los mensajes
 			gcmConnector.sendAllMessages(devices, message);
 
+		} catch (GCMNullDestinationException e)
+		{
+			e.printStackTrace();
+			throw new GCMServiceException(HttpStatus.BAD_REQUEST);
 		} catch (EntityNotFoundException e)
 		{
-			// TODO: log error y devolver al usuario rpta
 			e.printStackTrace();
+			throw new GCMServiceException(HttpStatus.NOT_FOUND);
 		} catch (GCMSendingMessageException e)
 		{
-			// TODO: log error y devolver al usuario rpta
 			e.printStackTrace();
+			throw new GCMServiceException(HttpStatus.SERVICE_UNAVAILABLE);
 		}
 
 		return response;

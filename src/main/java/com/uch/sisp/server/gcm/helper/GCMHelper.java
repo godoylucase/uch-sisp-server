@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.android.gcm.server.Message;
 import com.uch.sisp.server.database.entity.User;
-import com.uch.sisp.server.database.exception.NullDestinationException;
+import com.uch.sisp.server.gcm.exception.GCMNullDestinationException;
 import com.uch.sisp.server.http.domain.GPSPosition;
 
 @Component
@@ -18,7 +18,7 @@ public class GCMHelper
 {
 
 	public List<String> getVerifiedRegistrationIds(User user, List<String> destinationEmails)
-			throws NullDestinationException
+			throws GCMNullDestinationException
 	{
 		List<String> registrationIdsList = new ArrayList<String>();
 		Map<String, User> mapEmailUser = buildEmailUserMapFromUserList(user);
@@ -33,7 +33,7 @@ public class GCMHelper
 		}
 
 		if (registrationIdsList.isEmpty())
-			throw new NullDestinationException();
+			throw new GCMNullDestinationException();
 
 		return registrationIdsList;
 	}

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
+import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
@@ -43,8 +44,7 @@ public class GCMController
 	}
 
 	@RequestMapping(value = "/unregisterDevice", method = RequestMethod.POST)
-	public ResponseEntity<Void> unregisterDevice(
-			@RequestBody UnregisterDeviceRequest request)
+	public ResponseEntity<Void> unregisterDevice(@RequestBody UnregisterDeviceRequest request)
 	{
 		ResponseEntity<Void> response = null;
 
@@ -60,14 +60,22 @@ public class GCMController
 
 		return response;
 	}
-	
-	@RequestMapping(value = "/send", method = RequestMethod.POST)
-	public ResponseEntity<SendNotificationResponse> sendNotification(@RequestBody SendNotificationRequest request)
-	{
-		ResponseEntity<SendNotificationResponse> response = null;
-		SendNotificationResponse responseBody = null;
 
-		
+	@RequestMapping(value = "/send", method = RequestMethod.POST)
+	public ResponseEntity<SendNotificationResponse> sendNotification(
+			@RequestBody SendNotificationRequest request)
+	{
+		SendNotificationResponse responseBody = null;
+		ResponseEntity<SendNotificationResponse> response = null;
+		try
+		{
+			responseBody = gcmService.sendNotification(request);
+			response = new ResponseEntity<SendNotificationResponse>(responseBody, HttpStatus.CREATED);
+		} catch (GCMServiceException e)
+		{
+			response = new ResponseEntity<SendNotificationResponse>(responseBody, e.getHttpStatus());
+		}
+
 		return response;
 	}
 }

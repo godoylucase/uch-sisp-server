@@ -1,7 +1,7 @@
 package com.uch.sisp.server.service;
 
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
-import com.uch.sisp.server.database.exception.NullDestinationException;
+import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
@@ -14,5 +14,5 @@ public interface GCMService
 	
 	public void unregisterDevice(UnregisterDeviceRequest device) throws EntityNotFoundException;
 	
-	public SendNotificationResponse sendNotification(SendNotificationRequest request) throws EntityNotFoundException, NullDestinationException;
+	public SendNotificationResponse sendNotification(SendNotificationRequest request) throws GCMServiceException;
 }
