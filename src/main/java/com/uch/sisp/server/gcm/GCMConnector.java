@@ -15,6 +15,7 @@ import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
+import com.uch.sisp.server.gcm.exception.GCMSendingMessageException;
 import com.uch.sisp.server.service.UserService;
 
 @Component
@@ -28,9 +29,9 @@ public class GCMConnector
 	@Autowired
 	UserService userService;
 
-	public void sendAllMessages(List<String> devices, Message message) throws EntityNotFoundException
-	{ // send a multicast message using JSON
-		// must split in chunks of 1000 devices (GCM limit)
+	public void sendAllMessages(List<String> devices, Message message) throws EntityNotFoundException,
+			GCMSendingMessageException
+	{ // Envío multicast de mensajes. Dividido en lotes de 1000.
 		int total = devices.size();
 		List<String> partialDevices = new ArrayList<String>(total);
 		int counter = 0;
@@ -47,7 +48,8 @@ public class GCMConnector
 		}
 	}
 
-	private void syncSend(List<String> partialDevices, Message message) throws EntityNotFoundException
+	private void syncSend(List<String> partialDevices, Message message) throws EntityNotFoundException,
+			GCMSendingMessageException
 	{
 		MulticastResult multicastResult;
 		try
@@ -85,8 +87,7 @@ public class GCMConnector
 					userService.removeUserFromGCMService(registrationIdToRemove);
 				} else
 				{
-					// logger.severe("Error sending message to " + regId + ": "
-					// + error);
+					throw new GCMSendingMessageException();
 				}
 			}
 		}

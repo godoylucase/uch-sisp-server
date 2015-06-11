@@ -11,6 +11,7 @@ import com.uch.sisp.server.database.entity.User;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.database.exception.NullDestinationException;
 import com.uch.sisp.server.gcm.GCMConnector;
+import com.uch.sisp.server.gcm.exception.GCMSendingMessageException;
 import com.uch.sisp.server.gcm.helper.GCMHelper;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
@@ -24,10 +25,10 @@ public class GCMServiceImpl implements GCMService
 {
 	@Autowired
 	private UserDAO userDao;
-	
+
 	@Autowired
 	private GCMHelper gcmHelper;
-	
+
 	@Autowired
 	private GCMConnector gcmConnector;
 
@@ -64,15 +65,14 @@ public class GCMServiceImpl implements GCMService
 
 		SendNotificationResponse response = null;
 
-		// busca al usuario solicitante y sus suscriptos 
+		// busca al usuario solicitante y sus suscriptos
 		User user = userDao.getUserByEmail(request.getOriginUserEmail());
-		List<String> devices = gcmHelper.getVerifiedRegistrationIds(user,
-				request.getDestinationEmails());
-		
+		List<String> devices = gcmHelper.getVerifiedRegistrationIds(user, request.getDestinationEmails());
+
 		Message message = null;
 
-		//TODO: registrar nueva transacción en pendiente
-		
+		// TODO: registrar nueva transacción en pendiente
+
 		switch (request.getTag())
 		{
 		case PANIC:
@@ -81,9 +81,20 @@ public class GCMServiceImpl implements GCMService
 		default:
 			break;
 		}
-		
-		//envia los mensajes
-		gcmConnector.sendAllMessages(devices, message);
+		// envia los mensajes
+		try
+		{
+			gcmConnector.sendAllMessages(devices, message);
+
+		} catch (EntityNotFoundException e)
+		{
+			// TODO: log error y devolver al usuario rpta
+			e.printStackTrace();
+		} catch (GCMSendingMessageException e)
+		{
+			// TODO: log error y devolver al usuario rpta
+			e.printStackTrace();
+		}
 
 		return response;
 	}
