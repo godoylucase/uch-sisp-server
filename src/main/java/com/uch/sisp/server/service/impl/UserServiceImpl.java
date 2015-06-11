@@ -22,4 +22,12 @@ public class UserServiceImpl implements UserService
 		userDao.save(userToChange);
 	}
 
+	@Override
+	public void removeUserFromGCMService(String registrationIdToRemove) throws EntityNotFoundException
+	{
+		User removeFromGCM = userDao.getByRegistrationId(registrationIdToRemove);
+		removeFromGCM.setRegistrationId(null);
+		userDao.save(removeFromGCM);
+	}
+
 }

@@ -21,11 +21,10 @@ import com.uch.sisp.server.service.UserService;
 public class GCMConnector
 {
 	private static final int MULTICAST_SIZE = 1000;
-	private static final Executor threadPool = Executors.newFixedThreadPool(5);
 
 	@Autowired
 	private Sender sender;
-	
+
 	@Autowired
 	UserService userService;
 
@@ -44,7 +43,6 @@ public class GCMConnector
 			{
 				syncSend(partialDevices, message);
 				partialDevices.clear();
-				tasks++;
 			}
 		}
 	}
@@ -67,18 +65,14 @@ public class GCMConnector
 			String regId = partialDevices.get(i);
 			Result result = results.get(i);
 			String messageId = result.getMessageId();
+			String canonicalRegId = null;
 			if (messageId != null)
 			{
-				// logger.fine("Succesfully sent message to device: " + regId +
-				// "; messageId = "
-				// + messageId);
-				String canonicalRegId = result.getCanonicalRegistrationId();
+				// Mensajes enviados con exito
+				canonicalRegId = result.getCanonicalRegistrationId();
 				if (canonicalRegId != null)
 				{
-					// same device has more than on registration id:
-					// update it
-					// logger.info("canonicalRegId " + canonicalRegId);
-					// Datastore.updateRegistration(regId, canonicalRegId);
+					// cambio de regId en caso de venir uno nuevo
 					userService.replaceGCMRegistrationIdByCanonicalId(regId, canonicalRegId);
 				}
 			} else
@@ -86,10 +80,9 @@ public class GCMConnector
 				String error = result.getErrorCodeName();
 				if (error.equals(Constants.ERROR_NOT_REGISTERED))
 				{
-					// application has been removed from device -
-					// unregister it
-					// logger.info("Unregistered device: " + regId);
-					// Datastore.unregister(regId);
+					// aplicación removida, desuscribir
+					String registrationIdToRemove = canonicalRegId == null ? regId : canonicalRegId;
+					userService.removeUserFromGCMService(registrationIdToRemove);
 				} else
 				{
 					// logger.severe("Error sending message to " + regId + ": "
