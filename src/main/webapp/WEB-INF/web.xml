@@ -24,7 +24,8 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-		    /WEB-INF/spring/data/spring-data.xml	    
+			/WEB-INF/spring/gcm/spring-gcm.xml
+		    /WEB-INF/spring/data/spring-data.xml		    
 		</param-value>
 	</context-param>
 

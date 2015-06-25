@@ -10,10 +10,9 @@
 		http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<context:property-placeholder location="classpath:database.properties" />
-
 	<tx:annotation-driven />
-
+	<context:property-placeholder location="classpath:database.properties" order="2" ignore-unresolvable="true"/>
+	
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<beans:property name="driverClassName" value="${database.driver}" />
@@ -34,7 +33,7 @@
 		<beans:property name="dataSource" ref="dataSource" />
 		<beans:property name="packagesToScan">
 			<beans:array>
-				<beans:value>com.asat.data.entity</beans:value>
+				<beans:value>com.uch.sisp.server.database.entity</beans:value>
 			</beans:array>
 		</beans:property>
 		<beans:property name="hibernateProperties">
@@ -49,5 +48,8 @@
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<beans:property name="sessionFactory" ref="sessionFactory" />
 	</beans:bean>
+	
+	<context:component-scan 
+		base-package="com.uch.sisp.server.service, com.uch.sisp.server.database.dao.impl" />
 
 </beans:beans>

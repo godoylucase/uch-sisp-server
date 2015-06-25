@@ -1,62 +1,42 @@
 package com.uch.sisp.server.database.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import com.uch.sisp.server.database.entity.structure.BaseEntity;
 import com.uch.sisp.server.database.entity.structure.GenericDomainObject;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "sisp_user")
+@Table(name = "USER")
+@Getter @Setter
 public class User extends BaseEntity implements Serializable, GenericDomainObject
 {
-	private String userEmail;
-	private String registrationId;
-	private Set<User> subscriptions;
-
 	@Column(name = "user_email")
-	public String getUserEmail()
-	{
-		return userEmail;
-	}
-
+	private String userEmail;
+	
 	@Column(name = "gcm_registration_id")
-	public String getRegistrationId()
-	{
-		return registrationId;
-	}
+	private String registrationId;
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinTable(	name = "sisp_subscriptions", 
-				joinColumns = { @JoinColumn(name = "id_son") }, 
-				inverseJoinColumns = { @JoinColumn(name = "id_father") })
-	public Set<User> getSubscriptions()
-	{
-		return subscriptions;
-	}
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "SISP_SUBSCRIPTIONS", 
+		joinColumns = { @JoinColumn(name = "id_son") }, 
+		inverseJoinColumns = { @JoinColumn(name = "id_father") })
+	private Set<User> subscriptions = new HashSet<User>();
 
-	public void setUserEmail(String userEmail)
-	{
-		this.userEmail = userEmail;
-	}
-
-	public void setRegistrationId(String registrationId)
-	{
-		this.registrationId = registrationId;
-	}
-
-	public void setSubscriptions(Set<User> subscriptions)
-	{
-		this.subscriptions = subscriptions;
-	}
+	@ManyToMany(mappedBy = "subscriptions")
+	private Set<User> fathers = new HashSet<User>();
 
 }

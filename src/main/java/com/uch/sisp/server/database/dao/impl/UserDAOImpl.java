@@ -9,11 +9,10 @@ import com.uch.sisp.server.database.entity.User;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 
 @Repository
-@Transactional
 public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO
 {
 
-	public UserDAOImpl(Class<User> type)
+	public UserDAOImpl()
 	{
 		super(User.class);
 	}

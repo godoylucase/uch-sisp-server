@@ -20,10 +20,10 @@ import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
-import com.uch.sisp.server.service.GCMService;
+import com.uch.sisp.server.service.GoogleNotificationService;
 
 @Service
-public class GCMServiceImpl implements GCMService
+public class GCMServiceImpl implements GoogleNotificationService
 {
 	@Autowired
 	private UserDAO userDao;
@@ -39,7 +39,7 @@ public class GCMServiceImpl implements GCMService
 			throws EntityNotFoundException
 	{
 		RegisterDeviceResponse response = null;
-		User user = (User) userDao.getById(request.getId());
+		User user = (User) userDao.getUserByEmail(request.getEmail());
 		user.setRegistrationId(request.getRegisterId());
 
 		userDao.update(user);

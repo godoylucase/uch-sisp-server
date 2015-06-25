@@ -1,6 +1,7 @@
 package com.uch.sisp.server.http.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,14 +16,14 @@ import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
-import com.uch.sisp.server.service.GCMService;
+import com.uch.sisp.server.service.GoogleNotificationService;
 
 @RestController
 @RequestMapping(value = "/gcm")
 public class GCMController
 {
 	@Autowired
-	GCMService gcmService;
+	GoogleNotificationService googleNotificationService;
 
 	@RequestMapping(value = "/registerDevice", method = RequestMethod.POST)
 	public ResponseEntity<RegisterDeviceResponse> registerDevice(@RequestBody RegisterDeviceRequest request)
@@ -32,7 +33,7 @@ public class GCMController
 
 		try
 		{
-			responseBody = gcmService.registerDevice(request);
+			responseBody = googleNotificationService.registerDevice(request);
 			response = new ResponseEntity<RegisterDeviceResponse>(responseBody, HttpStatus.OK);
 		} catch (EntityNotFoundException e)
 		{
@@ -50,7 +51,7 @@ public class GCMController
 
 		try
 		{
-			gcmService.unregisterDevice(request);
+			googleNotificationService.unregisterDevice(request);
 			response = new ResponseEntity<Void>(HttpStatus.OK);
 		} catch (EntityNotFoundException e)
 		{
@@ -69,7 +70,7 @@ public class GCMController
 		ResponseEntity<SendNotificationResponse> response = null;
 		try
 		{
-			responseBody = gcmService.sendNotification(request);
+			responseBody = googleNotificationService.sendNotification(request);
 			response = new ResponseEntity<SendNotificationResponse>(responseBody, HttpStatus.CREATED);
 		} catch (GCMServiceException e)
 		{

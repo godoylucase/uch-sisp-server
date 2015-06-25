@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class GCMServiceException extends Exception
 {
+	private static final long serialVersionUID = 1L;
 	HttpStatus httpStatus;
 	
 	public GCMServiceException(HttpStatus httpStatus)

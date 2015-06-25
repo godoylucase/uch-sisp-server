@@ -8,7 +8,7 @@ import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 
-public interface GCMService
+public interface GoogleNotificationService
 {
 	public RegisterDeviceResponse registerDevice(RegisterDeviceRequest device) throws EntityNotFoundException;
 	
