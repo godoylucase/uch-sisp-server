@@ -31,4 +31,6 @@ public interface GenericDAO<T extends GenericDomainObject>
 	public Object updateAndReturn(T object);
 	
 	public void update(T object);
+
+	public Object saveOrUpdateAndReturn(T object);
 }

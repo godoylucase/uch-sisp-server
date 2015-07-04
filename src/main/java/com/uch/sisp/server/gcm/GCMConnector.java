@@ -14,7 +14,7 @@ import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.gcm.exception.GCMSendingMessageException;
-import com.uch.sisp.server.service.UserService;
+import com.uch.sisp.server.service.GoogleNotificationService;
 
 @Component
 public class GCMConnector
@@ -25,7 +25,7 @@ public class GCMConnector
 	private Sender sender;
 
 	@Autowired
-	UserService userService;
+	GoogleNotificationService googleNotificationService;
 
 	public void sendAllMessages(List<String> devices, Message message) throws EntityNotFoundException,
 			GCMSendingMessageException
@@ -37,8 +37,7 @@ public class GCMConnector
 		{
 			counter++;
 			partialDevices.add(device);
-			int partialSize = partialDevices.size();
-			if (partialSize == MULTICAST_SIZE || counter == total)
+			if (partialDevices.size() == MULTICAST_SIZE || counter == total)
 			{
 				syncSend(partialDevices, message);
 				partialDevices.clear();
@@ -59,7 +58,7 @@ public class GCMConnector
 			return;
 		}
 		List<Result> results = multicastResult.getResults();
-		// analyze the results
+		// analiza los resultados
 		for (int i = 0; i < partialDevices.size(); i++)
 		{
 			String regId = partialDevices.get(i);
@@ -73,7 +72,7 @@ public class GCMConnector
 				if (canonicalRegId != null)
 				{
 					// cambio de regId en caso de venir uno nuevo
-					userService.replaceGCMRegistrationIdByCanonicalId(regId, canonicalRegId);
+					googleNotificationService.replaceGCMRegistrationIdByCanonicalId(regId, canonicalRegId);
 				}
 			} else
 			{
@@ -82,7 +81,7 @@ public class GCMConnector
 				{
 					// aplicación removida, desuscribir
 					String registrationIdToRemove = canonicalRegId == null ? regId : canonicalRegId;
-					userService.removeUserFromGCMService(registrationIdToRemove);
+					googleNotificationService.unregisterGCMDevice(registrationIdToRemove);
 				} else
 				{
 					throw new GCMSendingMessageException();

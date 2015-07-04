@@ -161,6 +161,20 @@ public abstract class GenericDAOImpl<T extends GenericDomainObject> implements G
 		}
 		return object;
 	}
+	
+	@Override
+	@Transactional(readOnly = false)
+	public Object saveOrUpdateAndReturn(T object)
+	{
+		try
+		{
+			getHibernateCurrentSession().saveOrUpdate(object);
+		} catch (HibernateException e)
+		{
+			e.printStackTrace();
+		}
+		return object;
+	}
 
 	@Override
 	@Transactional(readOnly = false)

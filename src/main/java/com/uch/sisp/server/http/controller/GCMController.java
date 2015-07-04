@@ -62,7 +62,7 @@ public class GCMController
 		return response;
 	}
 
-	@RequestMapping(value = "/send", method = RequestMethod.POST)
+	@RequestMapping(value = "/sendGCMNotification", method = RequestMethod.POST)
 	public ResponseEntity<SendNotificationResponse> sendNotification(
 			@RequestBody SendNotificationRequest request)
 	{
@@ -70,7 +70,7 @@ public class GCMController
 		ResponseEntity<SendNotificationResponse> response = null;
 		try
 		{
-			responseBody = googleNotificationService.sendNotification(request);
+			responseBody = googleNotificationService.sendGCMNotification(request);
 			response = new ResponseEntity<SendNotificationResponse>(responseBody, HttpStatus.CREATED);
 		} catch (GCMServiceException e)
 		{

@@ -7,6 +7,6 @@ public interface UserDAO extends GenericDAO<User>
 {
 	public User getUserByEmail(String originUserEmail) throws EntityNotFoundException;
 
-	public User getByRegistrationId(String regId) throws EntityNotFoundException;
+	public User getUserByGCMRegistrationId(String regId) throws EntityNotFoundException;
 	
 }

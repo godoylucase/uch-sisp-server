@@ -32,7 +32,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO
 	
 	@Transactional(readOnly = true)
 	@Override
-	public User getByRegistrationId(String registrationId) throws EntityNotFoundException
+	public User getUserByGCMRegistrationId(String registrationId) throws EntityNotFoundException
 	{
 		Query query = getHibernateCurrentSession()
 				.createQuery(

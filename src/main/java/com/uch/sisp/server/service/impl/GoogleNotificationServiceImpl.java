@@ -22,7 +22,7 @@ import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GoogleNotificationService;
 
 @Service
-public class GCMServiceImpl implements GoogleNotificationService
+public class GoogleNotificationServiceImpl implements GoogleNotificationService
 {
 	@Autowired
 	private UserDAO userDao;
@@ -52,15 +52,34 @@ public class GCMServiceImpl implements GoogleNotificationService
 	}
 
 	@Override
-	public void unregisterGCMDevice(int deviceId) throws EntityNotFoundException
+	public User unregisterGCMDevice(int deviceId) throws EntityNotFoundException
 	{
 		User user = (User) userDao.getById(deviceId);
-		user.setRegistrationId(null);
-		userDao.update(user);
+		return updateRegistrationId(user, null);
+	}
+	
+	@Override
+	public User unregisterGCMDevice(String registrationIdToRemove) throws EntityNotFoundException
+	{
+		User user = (User) userDao.getUserByGCMRegistrationId(registrationIdToRemove);
+		return updateRegistrationId(user, null);
+	}
+	
+	@Override
+	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId) throws EntityNotFoundException 
+	{
+		User user = userDao.getUserByGCMRegistrationId(regId);
+		return updateRegistrationId(user, canonicalRegId);
+	}
+	
+	private User updateRegistrationId(User user, String registrationId)
+	{
+		user.setRegistrationId(registrationId);
+		return (User) userDao.saveOrUpdateAndReturn(user);
 	}
 
 	@Override
-	public SendNotificationResponse sendNotification(SendNotificationRequest request)
+	public SendNotificationResponse sendGCMNotification(SendNotificationRequest request)
 			throws GCMServiceException
 	{
 		SendNotificationResponse response = null;
