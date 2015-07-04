@@ -17,7 +17,6 @@ import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.gcm.helper.GCMHelper;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
-import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GoogleNotificationService;
@@ -35,24 +34,27 @@ public class GCMServiceImpl implements GoogleNotificationService
 	private GCMConnector gcmConnector;
 
 	@Override
-	public RegisterDeviceResponse registerDevice(RegisterDeviceRequest request)
+	public RegisterDeviceResponse registerGCMDevice(RegisterDeviceRequest request)
 			throws EntityNotFoundException
 	{
 		RegisterDeviceResponse response = null;
 		User user = (User) userDao.getUserByEmail(request.getEmail());
+		
 		user.setRegistrationId(request.getRegisterId());
 
-		userDao.update(user);
-
+		user = (User) userDao.updateAndReturn(user);
+		
 		response = new RegisterDeviceResponse();
-		response.setRegisterId(request.getRegisterId());
+		response.setRegisterId(user.getRegistrationId());
+		response.setEmail(user.getUserEmail());
+		response.setId(user.getId());
 		return response;
 	}
 
 	@Override
-	public void unregisterDevice(UnregisterDeviceRequest request) throws EntityNotFoundException
+	public void unregisterGCMDevice(int deviceId) throws EntityNotFoundException
 	{
-		User user = (User) userDao.getById(request.getId());
+		User user = (User) userDao.getById(deviceId);
 		user.setRegistrationId(null);
 		userDao.update(user);
 	}

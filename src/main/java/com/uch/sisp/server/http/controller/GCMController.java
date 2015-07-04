@@ -1,19 +1,19 @@
 package com.uch.sisp.server.http.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
-import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GoogleNotificationService;
@@ -25,7 +25,7 @@ public class GCMController
 	@Autowired
 	GoogleNotificationService googleNotificationService;
 
-	@RequestMapping(value = "/registerDevice", method = RequestMethod.POST)
+	@RequestMapping(value = "/registerGCMDevice", method = RequestMethod.POST)
 	public ResponseEntity<RegisterDeviceResponse> registerDevice(@RequestBody RegisterDeviceRequest request)
 	{
 		ResponseEntity<RegisterDeviceResponse> response = null;
@@ -33,8 +33,8 @@ public class GCMController
 
 		try
 		{
-			responseBody = googleNotificationService.registerDevice(request);
-			response = new ResponseEntity<RegisterDeviceResponse>(responseBody, HttpStatus.OK);
+			responseBody = googleNotificationService.registerGCMDevice(request);
+			response = new ResponseEntity<RegisterDeviceResponse>(responseBody, HttpStatus.CREATED);
 		} catch (EntityNotFoundException e)
 		{
 			response = new ResponseEntity<RegisterDeviceResponse>(responseBody, HttpStatus.NOT_FOUND);
@@ -44,14 +44,14 @@ public class GCMController
 		return response;
 	}
 
-	@RequestMapping(value = "/unregisterDevice", method = RequestMethod.POST)
-	public ResponseEntity<Void> unregisterDevice(@RequestBody UnregisterDeviceRequest request)
+	@RequestMapping(value = "/unregisterGCMDevice/{deviceId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> unregisterDevice(@PathVariable int deviceId)
 	{
 		ResponseEntity<Void> response = null;
 
 		try
 		{
-			googleNotificationService.unregisterDevice(request);
+			googleNotificationService.unregisterGCMDevice(deviceId);
 			response = new ResponseEntity<Void>(HttpStatus.OK);
 		} catch (EntityNotFoundException e)
 		{

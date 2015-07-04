@@ -24,9 +24,11 @@ public interface GenericDAO<T extends GenericDomainObject>
 
 	public void save(T object);
 	
-	void saveNonTransactional(T object);
+	public void saveNonTransactional(T object);
 
 	public void delete(T object);
 
-	void update(T object);
+	public Object updateAndReturn(T object);
+	
+	public void update(T object);
 }

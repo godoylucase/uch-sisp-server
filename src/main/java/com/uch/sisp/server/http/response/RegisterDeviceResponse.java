@@ -10,5 +10,6 @@ import lombok.Setter;
 public class RegisterDeviceResponse implements Serializable
 {
 	private int id;
+	private String email;
 	private String registerId;
 }

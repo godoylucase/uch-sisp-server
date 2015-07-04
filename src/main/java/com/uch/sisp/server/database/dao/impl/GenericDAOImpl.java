@@ -1,5 +1,6 @@
 package com.uch.sisp.server.database.dao.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -146,29 +147,31 @@ public abstract class GenericDAOImpl<T extends GenericDomainObject> implements G
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
-	public void delete(T object)
+	@Transactional(readOnly = false)
+	public Object updateAndReturn(T object)
 	{
-		Transaction trns = null;
-		Session session = getHibernateCurrentSession();
-
 		try
 		{
-			trns = session.beginTransaction();
-			session.delete(object);
-			trns.commit();
-		} catch (RuntimeException e)
+			getHibernateCurrentSession().update(object);
+		} catch (HibernateException e)
 		{
-			if (trns != null)
-			{
-				trns.rollback();
-			}
 			e.printStackTrace();
-		} finally
+		}
+		return object;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void delete(T object)
+	{
+		try
 		{
-			session.flush();
-			session.close();
+			getHibernateCurrentSession().delete(object);
+		} catch (HibernateException e)
+		{
+			e.printStackTrace();
 		}
 	}
 

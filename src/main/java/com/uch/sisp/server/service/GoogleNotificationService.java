@@ -4,15 +4,14 @@ import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
-import com.uch.sisp.server.http.request.UnregisterDeviceRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 
 public interface GoogleNotificationService
 {
-	public RegisterDeviceResponse registerDevice(RegisterDeviceRequest device) throws EntityNotFoundException;
+	public RegisterDeviceResponse registerGCMDevice(RegisterDeviceRequest device) throws EntityNotFoundException;
 	
-	public void unregisterDevice(UnregisterDeviceRequest device) throws EntityNotFoundException;
+	public void unregisterGCMDevice(int deviceId) throws EntityNotFoundException;
 	
 	public SendNotificationResponse sendNotification(SendNotificationRequest request) throws GCMServiceException;
 }
