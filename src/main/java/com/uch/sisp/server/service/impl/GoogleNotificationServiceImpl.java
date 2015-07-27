@@ -17,6 +17,7 @@ import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.gcm.helper.GCMHelper;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendNotificationRequest;
+import com.uch.sisp.server.http.request.SendPanicNotificationRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GoogleNotificationService;
@@ -38,12 +39,12 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 			throws EntityNotFoundException
 	{
 		RegisterDeviceResponse response = null;
-		User user = (User) userDao.getUserByEmail(request.getEmail());
-		
+		User user = userDao.getUserByEmail(request.getEmail());
+
 		user.setRegistrationId(request.getRegisterId());
 
 		user = (User) userDao.updateAndReturn(user);
-		
+
 		response = new RegisterDeviceResponse();
 		response.setRegisterId(user.getRegistrationId());
 		response.setEmail(user.getUserEmail());
@@ -54,24 +55,24 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 	@Override
 	public User unregisterGCMDevice(int deviceId) throws EntityNotFoundException
 	{
-		User user = (User) userDao.getById(deviceId);
+		User user = userDao.getById(deviceId);
 		return updateRegistrationId(user, null);
 	}
-	
+
 	@Override
 	public User unregisterGCMDevice(String registrationIdToRemove) throws EntityNotFoundException
 	{
-		User user = (User) userDao.getUserByGCMRegistrationId(registrationIdToRemove);
+		User user = userDao.getUserByGCMRegistrationId(registrationIdToRemove);
 		return updateRegistrationId(user, null);
 	}
-	
+
 	@Override
-	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId) throws EntityNotFoundException 
+	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId) throws EntityNotFoundException
 	{
 		User user = userDao.getUserByGCMRegistrationId(regId);
 		return updateRegistrationId(user, canonicalRegId);
 	}
-	
+
 	private User updateRegistrationId(User user, String registrationId)
 	{
 		user.setRegistrationId(registrationId);
@@ -92,7 +93,6 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 			// busca al usuario solicitante y sus suscriptos
 			User user = userDao.getUserByEmail(request.getOriginUserEmail());
 			List<String> devices = gcmHelper.getVerifiedRegistrationIds(user, request.getDestinationEmails());
-
 			Message message = null;
 
 			// TODO: registrar nueva transacción en pendiente
@@ -100,7 +100,8 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 			switch (request.getTag())
 			{
 			case PANIC:
-				message = gcmHelper.buildPanicNotification(request.getPosition());
+				SendPanicNotificationRequest panicRequest = (SendPanicNotificationRequest) request;
+				message = gcmHelper.buildPanicNotification(panicRequest.getPosition());
 				break;
 			default:
 				break;

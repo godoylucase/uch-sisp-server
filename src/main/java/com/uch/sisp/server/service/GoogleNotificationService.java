@@ -13,13 +13,12 @@ public interface GoogleNotificationService
 	public RegisterDeviceResponse registerGCMDevice(RegisterDeviceRequest device)
 			throws EntityNotFoundException;
 
-	public SendNotificationResponse sendGCMNotification(SendNotificationRequest request)
-			throws GCMServiceException;
-
 	public User unregisterGCMDevice(int deviceId) throws EntityNotFoundException;
 
 	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId)
 			throws EntityNotFoundException;
 
 	public User unregisterGCMDevice(String registrationIdToRemove) throws EntityNotFoundException;
+
+	public SendNotificationResponse sendGCMNotification(SendNotificationRequest request) throws GCMServiceException;
 }

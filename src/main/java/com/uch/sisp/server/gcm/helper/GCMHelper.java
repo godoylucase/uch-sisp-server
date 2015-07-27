@@ -41,7 +41,7 @@ public class GCMHelper
 	/**
 	 * Retorna un mapa Map<String, User> de subscriptos desde una lista de
 	 * usuarios
-	 * 
+	 *
 	 * @param user
 	 * @return Map<String, User>
 	 */
@@ -60,7 +60,7 @@ public class GCMHelper
 
 	/**
 	 * Construye un mensaje para una solicitud de Panico
-	 * 
+	 *
 	 * @param position
 	 * @return
 	 */
