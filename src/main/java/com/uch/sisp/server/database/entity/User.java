@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -30,7 +31,7 @@ public class User extends BaseEntity implements Serializable, GenericDomainObjec
 	@Column(name = "gcm_registration_id")
 	private String registrationId;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	@JoinTable(name = "SISP_SUBSCRIPTIONS", 
 		joinColumns = { @JoinColumn(name = "id_son") }, 
 		inverseJoinColumns = { @JoinColumn(name = "id_father") })

@@ -10,7 +10,7 @@ import com.uch.sisp.server.http.domain.NotificationTag;
 
 @SuppressWarnings("serial")
 @Getter @Setter
-public class SendNotificationRequest implements Serializable
+public abstract class SendNotificationRequest implements Serializable
 {
 	private List<String> destinationEmails;
 	private String originUserEmail;

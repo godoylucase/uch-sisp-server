@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
-import com.uch.sisp.server.http.request.SendNotificationRequest;
+import com.uch.sisp.server.http.request.SendPanicNotificationRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GoogleNotificationService;
@@ -63,7 +63,7 @@ public class GCMController
 
 	@RequestMapping(value = "/sendGCMNotification", method = RequestMethod.POST)
 	public ResponseEntity<SendNotificationResponse> sendNotification(
-			@RequestBody SendNotificationRequest request)
+			@RequestBody SendPanicNotificationRequest request)
 	{
 		SendNotificationResponse responseBody = null;
 		ResponseEntity<SendNotificationResponse> response = null;

@@ -16,7 +16,6 @@ import com.uch.sisp.server.gcm.exception.GCMSendingMessageException;
 import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.gcm.helper.GCMHelper;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
-import com.uch.sisp.server.http.request.SendNotificationRequest;
 import com.uch.sisp.server.http.request.SendPanicNotificationRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
 import com.uch.sisp.server.http.response.SendNotificationResponse;
@@ -80,7 +79,7 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 	}
 
 	@Override
-	public SendNotificationResponse sendGCMNotification(SendNotificationRequest request)
+	public SendNotificationResponse sendGCMNotification(SendPanicNotificationRequest request)
 			throws GCMServiceException
 	{
 		SendNotificationResponse response = null;
@@ -100,7 +99,8 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 			switch (request.getTag())
 			{
 			case PANIC:
-				SendPanicNotificationRequest panicRequest = (SendPanicNotificationRequest) request;
+				SendPanicNotificationRequest panicRequest = new SendPanicNotificationRequest();
+				panicRequest = (SendPanicNotificationRequest) request;
 				message = gcmHelper.buildPanicNotification(panicRequest.getPosition());
 				break;
 			default:
