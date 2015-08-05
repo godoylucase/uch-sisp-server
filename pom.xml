@@ -166,15 +166,22 @@
 			<version>${guava-version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.ganyo</groupId>
-			<artifactId>gcm-server</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.16.4</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>gcm-server</groupId>
+			<artifactId>gcm-server</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/gcm-server.jar</systemPath>
 		</dependency>
 	</dependencies>
 

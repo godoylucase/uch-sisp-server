@@ -101,7 +101,7 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 			case PANIC:
 				SendPanicNotificationRequest panicRequest = new SendPanicNotificationRequest();
 				panicRequest = (SendPanicNotificationRequest) request;
-				message = gcmHelper.buildPanicNotification(panicRequest.getPosition());
+				message = gcmHelper.buildPanicNotification(panicRequest.getPosition(), user);
 				break;
 			default:
 				break;

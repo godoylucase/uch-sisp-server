@@ -64,11 +64,14 @@ public class GCMHelper
 	 * @param position
 	 * @return
 	 */
-	public Message buildPanicNotification(GPSPosition position)
+	public Message buildPanicNotification(GPSPosition position, User user)
 	{
 		Message message = new Message.Builder().collapseKey("Panico").timeToLive(3).delayWhileIdle(true)
 				.addData("latitude", position.getLatitude().toString())
-				.addData("altitude", position.getAltitude().toString()).build();
+				.addData("altitude", position.getAltitude().toString())
+				.addNotificationData("title", "TE HAN ENVIADO UN AVISO DE PANICO")
+				.addNotificationData("body", user.getUserEmail())
+				.build();
 		return message;
 	}
 }
