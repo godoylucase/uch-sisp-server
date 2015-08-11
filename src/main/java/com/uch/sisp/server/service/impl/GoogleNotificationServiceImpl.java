@@ -2,6 +2,7 @@ package com.uch.sisp.server.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,8 +38,10 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 	public RegisterDeviceResponse registerGCMDevice(RegisterDeviceRequest request)
 			throws EntityNotFoundException
 	{
+
 		RegisterDeviceResponse response = null;
-		User user = userDao.getUserByEmail(request.getEmail());
+		User user = !StringUtils.isBlank(request.getEmail()) ? userDao.getUserByEmail(request.getEmail())
+				: userDao.getById(request.getId());
 
 		user.setRegistrationId(request.getRegisterId());
 
@@ -66,7 +69,8 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 	}
 
 	@Override
-	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId) throws EntityNotFoundException
+	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId)
+			throws EntityNotFoundException
 	{
 		User user = userDao.getUserByGCMRegistrationId(regId);
 		return updateRegistrationId(user, canonicalRegId);
