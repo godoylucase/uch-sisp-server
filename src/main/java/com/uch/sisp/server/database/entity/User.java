@@ -27,17 +27,17 @@ public class User extends BaseEntity implements Serializable, GenericDomainObjec
 {
 	@Column(name = "user_email")
 	private String userEmail;
-	
+
 	@Column(name = "gcm_registration_id")
 	private String registrationId;
 
 	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-	@JoinTable(name = "SISP_SUBSCRIPTIONS", 
-		joinColumns = { @JoinColumn(name = "id_son") }, 
+	@JoinTable(name = "SISP_SUBSCRIPTIONS",
+		joinColumns = { @JoinColumn(name = "id_son") },
 		inverseJoinColumns = { @JoinColumn(name = "id_father") })
 	private Set<User> subscriptions = new HashSet<User>();
 
-	@ManyToMany(mappedBy = "subscriptions")
+	@ManyToMany(mappedBy = "subscriptions", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<User> fathers = new HashSet<User>();
 
 }

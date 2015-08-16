@@ -9,6 +9,7 @@ import com.uch.sisp.server.http.domain.GPSPosition;
 
 @SuppressWarnings("serial")
 @Getter @Setter
-public class SendPanicNotificationRequest extends SendNotificationRequest implements Serializable{
+public class SendPanicNotificationRequest implements Serializable {
+	private int id;
 	private GPSPosition position;
 }

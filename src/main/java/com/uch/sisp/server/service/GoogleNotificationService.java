@@ -6,7 +6,6 @@ import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendPanicNotificationRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
-import com.uch.sisp.server.http.response.SendNotificationResponse;
 
 public interface GoogleNotificationService
 {
@@ -20,6 +19,6 @@ public interface GoogleNotificationService
 
 	public User unregisterGCMDevice(String registrationIdToRemove) throws EntityNotFoundException;
 
-	public SendNotificationResponse sendGCMNotification(SendPanicNotificationRequest request) throws GCMServiceException;
+	public void sendPanicNotification(SendPanicNotificationRequest request) throws GCMServiceException;
 
 }

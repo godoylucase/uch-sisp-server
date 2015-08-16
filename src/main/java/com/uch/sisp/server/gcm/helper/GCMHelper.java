@@ -68,8 +68,8 @@ public class GCMHelper
 	{
 		Message message = new Message.Builder().collapseKey("Panico").timeToLive(3).delayWhileIdle(true)
 				.addData("latitude", position.getLatitude().toString())
-				.addData("altitude", position.getAltitude().toString())
-				.addNotificationData("title", "TE HAN ENVIADO UN AVISO DE PANICO")
+				.addData("longitude", position.getLongitude().toString())
+				.addNotificationData("title", "AVISO DE PÁNICO!!")
 				.addNotificationData("body", user.getUserEmail())
 				.build();
 		return message;

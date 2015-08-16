@@ -1,5 +1,6 @@
 package com.uch.sisp.server.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,19 +13,16 @@ import com.uch.sisp.server.database.dao.UserDAO;
 import com.uch.sisp.server.database.entity.User;
 import com.uch.sisp.server.database.exception.EntityNotFoundException;
 import com.uch.sisp.server.gcm.GCMConnector;
-import com.uch.sisp.server.gcm.exception.GCMNullDestinationException;
 import com.uch.sisp.server.gcm.exception.GCMSendingMessageException;
 import com.uch.sisp.server.gcm.exception.GCMServiceException;
 import com.uch.sisp.server.gcm.helper.GCMHelper;
 import com.uch.sisp.server.http.request.RegisterDeviceRequest;
 import com.uch.sisp.server.http.request.SendPanicNotificationRequest;
 import com.uch.sisp.server.http.response.RegisterDeviceResponse;
-import com.uch.sisp.server.http.response.SendNotificationResponse;
 import com.uch.sisp.server.service.GoogleNotificationService;
 
 @Service
-public class GoogleNotificationServiceImpl implements GoogleNotificationService
-{
+public class GoogleNotificationServiceImpl implements GoogleNotificationService {
 	@Autowired
 	private UserDAO userDao;
 
@@ -35,13 +33,11 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 	private GCMConnector gcmConnector;
 
 	@Override
-	public RegisterDeviceResponse registerGCMDevice(RegisterDeviceRequest request)
-			throws EntityNotFoundException
-	{
+	public RegisterDeviceResponse registerGCMDevice(RegisterDeviceRequest request) throws EntityNotFoundException {
 
 		RegisterDeviceResponse response = null;
-		User user = !StringUtils.isBlank(request.getEmail()) ? userDao.getUserByEmail(request.getEmail())
-				: userDao.getById(request.getId());
+		User user = !StringUtils.isBlank(request.getEmail()) ? userDao.getUserByEmail(request.getEmail()) : userDao.getById(request
+				.getId());
 
 		user.setRegistrationId(request.getRegisterId());
 
@@ -55,78 +51,47 @@ public class GoogleNotificationServiceImpl implements GoogleNotificationService
 	}
 
 	@Override
-	public User unregisterGCMDevice(int deviceId) throws EntityNotFoundException
-	{
+	public User unregisterGCMDevice(int deviceId) throws EntityNotFoundException {
 		User user = userDao.getById(deviceId);
 		return updateRegistrationId(user, null);
 	}
 
 	@Override
-	public User unregisterGCMDevice(String registrationIdToRemove) throws EntityNotFoundException
-	{
+	public User unregisterGCMDevice(String registrationIdToRemove) throws EntityNotFoundException {
 		User user = userDao.getUserByGCMRegistrationId(registrationIdToRemove);
 		return updateRegistrationId(user, null);
 	}
 
 	@Override
-	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId)
-			throws EntityNotFoundException
-	{
+	public User replaceGCMRegistrationIdByCanonicalId(String regId, String canonicalRegId) throws EntityNotFoundException {
 		User user = userDao.getUserByGCMRegistrationId(regId);
 		return updateRegistrationId(user, canonicalRegId);
 	}
 
-	private User updateRegistrationId(User user, String registrationId)
-	{
+	private User updateRegistrationId(User user, String registrationId) {
 		user.setRegistrationId(registrationId);
 		return (User) userDao.saveOrUpdateAndReturn(user);
 	}
 
 	@Override
-	public SendNotificationResponse sendGCMNotification(SendPanicNotificationRequest request)
-			throws GCMServiceException
-	{
-		SendNotificationResponse response = null;
-		try
-		{
-			// chequea si la lista de distrubución no está vacía
-			if (request.getDestinationEmails().isEmpty())
-				throw new GCMNullDestinationException();
-
+	public void sendPanicNotification(SendPanicNotificationRequest request) throws GCMServiceException {
+		try {
 			// busca al usuario solicitante y sus suscriptos
-			User user = userDao.getUserByEmail(request.getOriginUserEmail());
-			List<String> devices = gcmHelper.getVerifiedRegistrationIds(user, request.getDestinationEmails());
-			Message message = null;
-
-			// TODO: registrar nueva transacción en pendiente
-
-			switch (request.getTag())
-			{
-			case PANIC:
-				SendPanicNotificationRequest panicRequest = new SendPanicNotificationRequest();
-				panicRequest = (SendPanicNotificationRequest) request;
-				message = gcmHelper.buildPanicNotification(panicRequest.getPosition(), user);
-				break;
-			default:
-				break;
+			User user = userDao.getById(request.getId());
+			List<String> devices = new ArrayList<String>();
+			for (User father : user.getFathers()) {
+				devices.add(father.getRegistrationId());
 			}
+			Message message = gcmHelper.buildPanicNotification(request.getPosition(), user);
 			// envia los mensajes
 			gcmConnector.sendAllMessages(devices, message);
 
-		} catch (GCMNullDestinationException e)
-		{
-			e.printStackTrace();
-			throw new GCMServiceException(HttpStatus.BAD_REQUEST);
-		} catch (EntityNotFoundException e)
-		{
+		} catch (EntityNotFoundException e) {
 			e.printStackTrace();
 			throw new GCMServiceException(HttpStatus.NOT_FOUND);
-		} catch (GCMSendingMessageException e)
-		{
+		} catch (GCMSendingMessageException e) {
 			e.printStackTrace();
 			throw new GCMServiceException(HttpStatus.SERVICE_UNAVAILABLE);
 		}
-
-		return response;
 	}
 }
